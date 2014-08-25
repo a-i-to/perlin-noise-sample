@@ -31,13 +31,15 @@ function drawDots(ctx) {
     }
 }
 
-function sumNoises(perlinNoises, x, wavelength) {
+function sumNoises(perlinNoises, x, baseWavelength) {
     var result = 0;
 
     for (var i = 0;i < EXPONENT_OF_FREQ;i++) {
+	var amplitude = Math.pow(PERSISTENCE, i);
+	var wavelength = baseWavelength / Math.pow(2, i);
+
 	result += perlinNoises[i].noise(
-	    x / (wavelength / (Math.pow(2, i))))
-	    * Math.pow(PERSISTENCE, i);
+	    x / wavelength) * amplitude;
     }
     return result;
 }
