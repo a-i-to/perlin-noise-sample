@@ -29,3 +29,5 @@ PerlinNoise.prototype.noise = function(x) {
 
     return 2 * (u + sx * (v - u));
 };
+
+this.PerlinNoise = PerlinNoise;
