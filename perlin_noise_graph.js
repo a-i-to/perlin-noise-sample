@@ -2,19 +2,18 @@ var RADIUS = 1;
 var COLOR = 'rgb(192,80,77)';
 var WAVELENGTH = 480;
 
-var $graph;
-
-function drawBG(ctx) {
-    ctx.clearRect(0, 0, $graph.width(), $graph.height());
+function drawBG(graph, ctx) {
+    ctx.clearRect(0, 0, graph.offsetWidth, graph.offsetHeight);
     ctx.fillStyle = 'rgb(0,0,0)';
-    ctx.fillRect(0, 0, $graph.width(), $graph.height());
+    ctx.fillRect(0, 0, graph.offsetWidth, graph.offsetHeight);
 }
 
-function drawDots(ctx) {
-    var graphWidth = $graph.width();
-    var graphHeight = $graph.height();
+function drawDots(graph, ctx) {
+    var graphWidth = graph.offsetWidth;
+    var graphHeight = graph.offsetHeight;
     var perlinNoise = new PerlinNoise();
-    var wavelength = $('#wavelengthField').val();    
+    var wavelengthField = document.getElementById('wavelengthField');
+    var wavelength = wavelengthField.value
 
     if (wavelength) {
 	wavelength = Number(wavelength);
@@ -25,26 +24,32 @@ function drawDots(ctx) {
     ctx.strokeStyle = COLOR;
     ctx.fillStyle = COLOR;
     for (var x = 0;x < graphWidth;x += (RADIUS * 2)) {
-	var y = (graphHeight / 2) + 
-	 perlinNoise.noise(x / wavelength) * (graphHeight / 2);
+	var y = (graphHeight / 2) +
+	    perlinNoise.noise(x / wavelength) * (graphHeight / 2);
 	ctx.beginPath();
-	ctx.arc(x + RADIUS, y, 2, 0, Math.PI*2, false);
+	ctx.arc(x + RADIUS, y, 2, 0, Math.PI * 2, false);
 	ctx.fill();
-    }    
+    }
 }
 
-function draw() {
-    var ctx = $graph[0].getContext('2d');
-    drawBG(ctx);
-    drawDots(ctx);
+function draw(graph) {
+    var ctx = graph.getContext('2d');
+    drawBG(graph, ctx);
+    drawDots(graph, ctx);
 }
 
-$(document).ready(function() {
-    $graph = $('#graph');
+function main() {
+    var graph = document.getElementById('graph');
+    var button = document.getElementById('updateButton');
 
-    $('#updateButton').click(function() {
-	draw();
+    button.addEventListener('click', function() {
+        draw(graph);
     });
+    draw(graph);
+}
 
-    draw();
-});
+if (document.readyState != 'loading') {
+    main();
+} else {
+    document.addEventListener('DOMContentLoaded', main);
+}
